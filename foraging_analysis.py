@@ -12,7 +12,7 @@ LAST_N_PERCENT = 0
 SELECTED_PART = 0
 
 # 'C:/Users/matan/Documents/Matan/Foraging/DATA/Preliminary anlysis/Initial analysis 4_24/'
-fgo.Foraging_analysis_object('C:/Users/matan/Documents/Matan/Foraging/DATA/Preliminary anlysis/Initial analysis 4_24/', N_PARTS, LAST_N_PERCENT, SELECTED_PART)\
+fgo.Foraging_analysis_object('C:/Users/meshe/OneDrive/Documents/Foraging/DATA/Preliminary anlysis/Initial analysis 4_24/', N_PARTS, LAST_N_PERCENT, SELECTED_PART)\
     .load_files()\
     .apply_basic_corrections()\
     .leave_relevant_subjects()\
@@ -22,7 +22,7 @@ fgo.Foraging_analysis_object('C:/Users/matan/Documents/Matan/Foraging/DATA/Preli
     .keep_last_n_of_data()\
     .calculate_all_paramteres()\
     .clean_outliers()\
-    .all_parameters_to_csv('all_parameters_part_outliers')
-    
+    .all_parameters_to_csv('all_parameters_all_parts_no_outliers')
+
 # create a method in Foraging_analysis_object that reads all csv files in a folder an unions them
 

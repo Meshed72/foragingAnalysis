@@ -7,10 +7,10 @@ Created on Sun May 12 21:44:37 2024
 
 from data_manipulator import Data_manipulator as dm
 
-class Parameters_generator:    
-    def __init__(self):        
+class Parameters_generator:
+    def __init__(self):
         return None
-    
+
     def get_p1(self, patch_df):
         # Average time in each patch
         return dm.get_avg_time_patch(patch_df)
@@ -208,7 +208,7 @@ class Parameters_generator:
 
         return general_redness.rename('general_redness').to_frame()
 
-    def get_p11b(self, click_df):        
+    def get_p11b(self, click_df):
         # Average level of redness in 10 last clicks
         num_of_clicks = 10
 
@@ -249,14 +249,18 @@ class Parameters_generator:
             ['avg_berries_left']\
             .to_frame()
 
-    @staticmethod 
-    def calc_dass(dass_df):
+    @staticmethod
+    def calc_dass(main_obj):
+        dass_df = main_obj.dass_df
         #  Drop infrequency item 14
-        dass_df = dass_df.query('question_14 == 0')
+        queried = dass_df.query('question_14 == 0')
+        main_obj.add_outliers("DASS", dass_df.set_index('Subject ID'), queried.set_index('Subject ID'))
+
+        dass_df = queried
         dass_df = dass_df.drop(columns=['id', 'question_14'])
-        
+
         depression_items = ["question_" + str(i) for i in [3, 5, 10, 13, 16, 17, 21]]
-        anxiety_items = ["question_" + str(i) for i in [2, 4, 7, 9, 15, 19, 20]]    
+        anxiety_items = ["question_" + str(i) for i in [2, 4, 7, 9, 15, 19, 20]]
         all_items = depression_items + anxiety_items
 
         dass_df['dass_depression'] = dass_df[depression_items].sum(axis=1)
@@ -264,17 +268,22 @@ class Parameters_generator:
         dass_df['dass_general'] = dass_df[all_items].sum(axis=1)
         return dass_df[['Subject ID', 'dass_depression', 'dass_anxiety', 'dass_general']].set_index('Subject ID')
 
-    @staticmethod     
-    def calc_oci(oci_df):
+    @staticmethod
+    def calc_oci(main_obj):
+        oci_df = main_obj.oci_df.set_index('Subject ID')
         #  Drop infrequency item 11
-        oci_df = oci_df.set_index('Subject ID').query('question_11 == 0')
+        queried = oci_df.query('question_11 == 0')
+        main_obj.add_outliers("OCI", oci_df, queried)
+        oci_df = queried
         oci_df['oci_sum'] = oci_df.drop(columns=['id', 'question_11']).sum(axis=1, numeric_only=True)
         return oci_df[['oci_sum']]
 
-    @staticmethod 
-    def calc_aaq(aaq_df):
+    @staticmethod
+    def calc_aaq(main_obj):
+        aaq_df = main_obj.aaq_df.set_index('Subject ID')
         #  Drop infrequency item 5
-        aaq_df = aaq_df.set_index('Subject ID').query('question_6 == 7')
+        queried = aaq_df.query('question_6 == 7')
+        main_obj.add_outliers("AAQ", aaq_df, queried)
+        aaq_df = queried
         aaq_df['aaq_sum'] = aaq_df.drop(columns=['id', 'question_6']).sum(axis=1, numeric_only=True)
         return aaq_df[['aaq_sum']]
-    
